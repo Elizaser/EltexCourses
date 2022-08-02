@@ -57,8 +57,6 @@ int main () {
 				scanf("%16s", searchName);
 				search(user1, searchName);
 				break;
-			defult: 
-				break;
 		}
 		scanf("%d", &button);		
 	}while(button != 5);

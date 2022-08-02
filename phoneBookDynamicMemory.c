@@ -54,8 +54,6 @@ int main () {
 			case 4: 
 				search(user1);
 				break;
-			defult: 
-				break;
 		}
 		printf("Введите пункт меню: ");
 		scanf("%d", &button);		
