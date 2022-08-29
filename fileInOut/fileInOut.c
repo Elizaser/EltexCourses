@@ -12,8 +12,6 @@ void fileIn(FILE *fp) {
         	exit(2);
     	}
     }
-
-    fclose(fp);
 }
 void fileOut(FILE *fp) {
 	long size;
@@ -47,6 +45,6 @@ int main() {
 
 	fileIn(fp);
 	fileOut(fp);
-
+ 	fclose(fp);
 	exit(0);
 }
