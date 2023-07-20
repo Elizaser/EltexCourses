@@ -45,12 +45,9 @@ int main(void)
 			allUsers(users); 
 			break;
 		case 2: 
-			if(checkMemory()) {
-				addUser(users);
-				break;
-			} else {
-				continue;
-			}                                                        
+			if(!checkMemory()) continue;
+			addUser(users);
+			break;                                                     
 		case 3:
 			deleteUser(users);
 			break;
@@ -60,7 +57,6 @@ int main(void)
 		case 5:
 			printf("До свидания!\n");
 			exit(0);
-			break;
 		default:
 			printf("Такого пункта меню нет. Попробуйте заново\n");
 			continue;
@@ -116,7 +112,6 @@ void sort(struct user users[SIZE_PHONEBOOK]) {
 	struct user tmpRevers;
 	for(int i = 0; i < curCountUsers; i++) {
 		for(int j = i + 1; j < curCountUsers; j++) {
-			printf("2 users[i].name = %s\n", users[i].name);
 			if(strcmp(users[i].name, users[j].name) > 0 && strcmp(users[j].name, "\0") != 0 || strcmp(users[i].name, "\0") == 0) {
 				assignmentStruct(&tmpRevers, users[i]);
 				assignmentStruct(&users[i], users[j]);
@@ -161,7 +156,7 @@ void deleteUser(struct user users[SIZE_PHONEBOOK]) {
 		printf("\nВведите номер пользователя для удаления(от 1 до %d) или -1 для выхода: ", curCountUsers);
 		scanf("%d", &numberUser);
 		if(numberUser == -1) return;
-	} while (numberUser < 1 || numberUser  > 10);
+	} while (numberUser < 1 || numberUser  > curCountUsers);
 
 	clearUser(&users[numberUser - 1]);
 	sort(users);
@@ -189,7 +184,6 @@ void searchUser(struct user users[SIZE_PHONEBOOK]) {
 				if(strcmp(users[middle].name, soughtName) < 0) {
 					l = middle + 1; 
 				} else {
-					// printUser(users[middle]);
 					r = middle;
 				}
 		}
