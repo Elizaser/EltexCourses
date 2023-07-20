@@ -45,11 +45,7 @@ int main(void)
 			allUsers(users); 
 			break;
 		case 2: 
-			if(curCountUsers >= SIZE_PHONEBOOK){
-				printf("Память переполнена. Нужно что-нибудь удалить!\n");
-				continue;
-			}   
-			if(checkMemory) {
+			if(checkMemory()) {
 				addUser(users);
 				break;
 			} else {
