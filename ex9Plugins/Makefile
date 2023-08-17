@@ -12,6 +12,5 @@ $(bin): calculator.h calculator.c main.c
 run: 
 	./calculator ./libplus.so  ./libminus.so ./libmultiply.so ./libdivide.so
 clear:
-	rm *.o
 	rm *.so
 	rm calculator
