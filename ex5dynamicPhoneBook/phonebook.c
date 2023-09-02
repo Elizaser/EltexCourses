@@ -7,14 +7,15 @@
 #define SIZE_LASTNAME 20
 #define SIZE_numberPhone 11
 
-int curCountUsers;
-struct user *users; 
-
 struct user{
 	char name[SIZE_NAME];
 	char lastname[SIZE_LASTNAME];
 	char numberPhone[SIZE_numberPhone];
 };
+
+int curCountUsers;
+struct user *users; 
+
 
 void printMenu();
 void allUsers();
