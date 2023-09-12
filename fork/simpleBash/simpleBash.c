@@ -36,6 +36,11 @@ void callComand(char **args, int count) {
 	pid_t pid;
 	int status;
 
+	printf("count  = %d\n", count);
+	for(int  i = 0; i < count; i++) {
+		printf("%s+\n", args[i]);
+	}
+
 	pid = fork();
 	if (pid == 0) {
 		if(execvp(args[0], args) == -1) {
