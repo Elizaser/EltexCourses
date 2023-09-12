@@ -8,61 +8,53 @@
 #define countBuyers 3
 
 int shops[countShops];
-pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
-
-int getRandom(int min, int max);
+pthread_mutex_t m[countShops];
 
 void *threadBuyer(void *args) {
-	// int *shops = (int *)args;
-	int need = getRandom(900, 1100);;
+	int need = 10000;
 	int i = 0;
-	int *ptr = (int*)args;
+	int *number = (int*)args;
 
-	printf("Create buyer %d, need = %d\n", *ptr, need);
+	printf("Create buyer %d\n", *number);
 
 	while(need != 0) {
+		printf("Buyer № %d wake up\n", *number);
 		if (i == countShops) i = 0;
 		while(i < countShops) {
-			if(shops[i] != 0) {
-				pthread_mutex_lock(&m);
-				printf("In buyer № %d need = %d: in shop № %d. Products  = %d\n", *ptr, need, i, shops[i]);
-				if (need > shops[i]) {
-					need -= shops[i];
-					shops[i] = 0;
-				} else {
-					shops[i] -= need;
-					need = 0;
-				}
-				pthread_mutex_unlock(&m);
+			if(pthread_mutex_trylock(&m[i]) == 0 && shops[i] != 0) {
+				need -= shops[i];
+				shops[i] = 0;
+				printf("Buyer № %d in shop № %d. Need = %d\n", *number, i, need);
 				break;
 			}
-			printf("Buyer № %d: shop № %d does not products. Next\n", *ptr, i);
+			pthread_mutex_unlock(&m[i]);
+			printf("Buyer № %d in shop № %d was unable to take the products. Next\n", *number, i);
 			i++;
 		}
+		printf("Buyer № %d sleep\n", *number);
 		sleep(2);
 	}
 	return NULL;
 }
 
 void *threadLoader(void *args) {
-	
-	// int *shops = (int *)args;
 	int i = 0;
-
+	printf("Create loader\n");
 
 	while (1) {
+		printf("Loader wake up\n");
 		if (i == countShops) i = 0;
 		while(i < countShops) {
-			if(shops[i] == 0) {
-				pthread_mutex_lock(&m);
-				printf("loader: shop № %d is empty. Loading products and go\n", i);
+			if(pthread_mutex_trylock(&m[i]) == 0 && shops[i] == 0) {
 				shops[i] = 1000;
-				pthread_mutex_unlock(&m);
+				printf("loader: Loading products in shop № %d\n", i);
 				break;
 			}
-			printf("loader: shop № %d does not need products. Next\n", i);
+			pthread_mutex_unlock(&m[i]);
+			printf("loader: shop № %d does not loading. Next\n", i);
 			i++;
 		}
+		printf("Loader sleep\n");
 		sleep(2);
 	}
 	return NULL;
@@ -73,30 +65,26 @@ int main(void) {
 	pthread_t loader;
 	int a[countBuyers];
 
-	srand(time(NULL));
 
-	for(int i = 0; i < countShops; i++ )  
-		shops[i] = getRandom(900, 1100);
-
-	printf("Create shops:\n");
-	for(int i = 0; i < countShops; i++ ) {
-		printf("%d: %d products\n", i, shops[i]);
+	for(int i = 0; i < countShops; i++ )  {
+		shops[i] = 1000;
+		pthread_mutex_init(&m[i], NULL);
 	}
 
-	for(int  i = 0; i < countShops; i++) {
+	
+	for(int  i = 0; i < countBuyers; i++) {
 		a[i] = i;
 		pthread_create(&buyers[i], NULL, threadBuyer, (void*)&a[i]);
 	}
-
 	pthread_create(&loader, NULL, threadLoader, NULL);
 
-	for(int i = 0; i < countShops; i++) {
+	for(int i = 0; i < countBuyers; i++) {
 		pthread_join(buyers[i], NULL);
 	}
-	// pthread_join(loader, NULL);
+
+	for(int i = 0; i < countShops; i++ )  {
+		pthread_mutex_destroy(&m[i]);
+	}
 
 	return 0;
-}
-int getRandom(int min, int max) {
-	return min + rand()%(max - min + 1);
 }
