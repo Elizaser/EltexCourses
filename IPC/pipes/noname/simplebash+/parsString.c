@@ -1,8 +1,22 @@
 #include "parsString.h"
-int getCount(char * strArgs, char *tok) {
+#include <stdlib.h>
+int pars(char* string, char ***array, char* tok) {
+	int count;
+	
+	count = getCount(string, tok);
+	*array = realloc(*array, (count + 1) * sizeof(*array));
+	for(int i = 0; i < count; ++i) {
+		(*array)[i] = realloc((*array)[i], 20 * sizeof(**array));
+		// memset((*array)[i],0,sizeof((*array)[i]));
+	}
+	stringInArray(string, *array, tok);
+	return count;
+}
+
+int getCount(char * string, char *tok) {
 	int countWords = 0;
-	char *tStrArgs = malloc((strlen(strArgs)) * sizeof (*tStrArgs));
-	strcpy(tStrArgs, strArgs);
+	char *tStrArgs = malloc((strlen(string)) * sizeof (*tStrArgs));
+	strcpy(tStrArgs, string);
 	tStrArgs = strtok(tStrArgs, tok);
 
 	while(tStrArgs != NULL) {
@@ -14,10 +28,9 @@ int getCount(char * strArgs, char *tok) {
 	return countWords;
 }
 
-void stringInArray(char *string, char **array, int count, char *tok) {
+void stringInArray(char *string, char **array, char *tok) {
 	int i = 0;
 	char *tStrArgs = malloc((strlen(string)) * sizeof (*tStrArgs));
-	
 	strcpy(tStrArgs, string);
 	tStrArgs = strtok(tStrArgs, tok);
 
@@ -26,22 +39,6 @@ void stringInArray(char *string, char **array, int count, char *tok) {
 		tStrArgs = strtok(NULL, tok);
 		i++;
 	}
-	array[count] = NULL;
+	array[i] = NULL;
 	free(tStrArgs);
 }
-
-// void getProcess(char *string, char **process, int count) {
-// 	int i = 0;
-// 	char *tStrArgs = malloc((strlen(string)) * sizeof (*tStrArgs));
-	
-// 	strcpy(tStrArgs, string);
-// 	tStrArgs = strtok(tStrArgs, "|");
-
-// 	while(tStrArgs != NULL) {
-// 		strcpy(array[i], tStrArgs);
-// 		tStrArgs = strtok(NULL, "|");
-// 		i++;
-// 	}
-// 	array[count] = NULL;
-// 	free(tStrArgs);
-// }

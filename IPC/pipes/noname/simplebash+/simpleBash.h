@@ -11,7 +11,8 @@
 #define sizeInBuffer 50
 
 void runSB();
-int getJob(char* strIn, char*** array, char* tok);
-void callComands(int fdR[], int fdW[], char **args, int count);
+void getComands(char* strIn);
+int callComands(char* strIn);
+int callComand(int fdR[], int fdW[], char **args);
 
 #endif /*SIMPLEBASH_H*/
